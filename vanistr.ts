@@ -1,7 +1,19 @@
-import { generateKeyPair, KeyPair, bytesToBech32 } from "npm:nostr-types"
+import { KeyPair, generateKeyPair, createKeyPair, bytesToBech32, Mnemonic, generateMnemonic, getPrivateKeyFromMnenomic, wordlistEnglish } from "npm:nostr-types"
+import { parseArgs } from "jsr:@std/cli/parse-args"
 
-const vanity = Deno.args[0]
+const flags = parseArgs(Deno.args, {
+  string: ["mnemonic"],
+  alias: {
+    "mnemonic": "m",
+  }
+})
+
+
+const vanity = flags._[0]
 const vanityLength = vanity?.length ?? 0
+
+const mnemonicLength = flags.mnemonic !== undefined ? parseInt(flags.mnemonic) : undefined
+const shouldGenerateMnemonic = mnemonicLength !== undefined
 
 console.log(`Vanity: ${ vanity } (${ vanityLength })`)
 
@@ -17,6 +29,12 @@ if (bech32Regex.test(vanity) === false) {
   Deno.exit()
 }
 
+const mnemonicLengths = [12, 24]
+if (shouldGenerateMnemonic && mnemonicLengths.includes(mnemonicLength) === false) {
+  console.error("Invalid mnemonic length (not 12 or 24)")
+  Deno.exit()
+}
+
 if (vanityLength > 5) {
   console.warn("This could take a while")
 }
@@ -25,15 +43,28 @@ if (vanityLength > 5) {
 console.log("⌛")
 
 let matchedKeyPair: KeyPair
+let matchedMnemonic: Mnemonic
 
 while (matchedKeyPair === undefined) {
 
-  const keyPair = await generateKeyPair()
+  let keyPair: KeyPair
+  let mnemonic: Mnemonic
+  if (shouldGenerateMnemonic) {
+    mnemonic = generateMnemonic(wordlistEnglish, mnemonicLength)
+    const privateKey = await getPrivateKeyFromMnenomic(mnemonic, wordlistEnglish)
+    keyPair = await createKeyPair(privateKey)
+  } else {
+    keyPair = await generateKeyPair()
+  }
+
   const npub = bytesToBech32(keyPair.publicKey, "npub")
   const s = npub.substr(5, vanityLength)
 
   if (s === vanity) {
     matchedKeyPair = keyPair
+    if (shouldGenerateMnemonic) {
+      matchedMnemonic = mnemonic
+    }
   }
 }
 
@@ -47,4 +78,5 @@ Found!
 ======
 npub: ${ npub }
 nsec: ${ nsec }
+mnemonic: ${ shouldGenerateMnemonic ? matchedMnemonic.join(" ") : "-" }
 `)
