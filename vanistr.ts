@@ -61,7 +61,7 @@ while (matchedKeyPair === undefined) {
   }
 
   const npub = bytesToBech32(keyPair.publicKey, "npub")
-  const s = npub.substr(5, vanityLength)
+  const s = npub.substring(5, 5 + vanityLength)
 
   if (s === vanity) {
     matchedKeyPair = keyPair
