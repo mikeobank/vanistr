@@ -1,4 +1,16 @@
-import { KeyPair, generateKeyPair, createKeyPair, bytesToBech32, areBech32Chars, Mnemonic, generateMnemonic, getPrivateKeyFromMnenomic, wordlistEnglish, MnemonicLength, isMnemonicLength } from "npm:nostr-types"
+import { 
+  type KeyPair, 
+  generateKeyPair, 
+  createKeyPair, 
+  bytesToBech32, 
+  areBech32Chars, 
+  type Mnemonic, 
+  generateMnemonic, 
+  getPrivateKeyFromMnenomic, 
+  wordlistEnglish, 
+  type MnemonicLength, 
+  isMnemonicLength 
+} from "npm:nostr-types"
 import { parseArgs } from "jsr:@std/cli/parse-args"
 
 const flags = parseArgs(Deno.args, {
