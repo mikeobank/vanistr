@@ -12,6 +12,7 @@ import {
   isMnemonicLength 
 } from "npm:nostr-types"
 import { parseArgs } from "jsr:@std/cli/parse-args"
+import { toBech32 } from "./characters/toNpub.ts"
 
 const flags = parseArgs(Deno.args, {
   string: ["mnemonic"],
@@ -22,8 +23,9 @@ const flags = parseArgs(Deno.args, {
 
 const vanity = flags._[0] !== undefined ? String(flags._[0]) : ""
 const vanityLength = vanity.length ?? 0
+const search = toBech32(vanity)
 
-const mnemonicLengthNum = flags.mnemonic !== undefined ? parseInt(flags.mnemonic) : undefined
+const mnemonicLengthNum = flags.mnemonic !== undefined ? parseInt(flags.mnemonic, 10) : undefined
 let shouldGenerateMnemonic = false
 let mnemonicLength: MnemonicLength | undefined
 
@@ -35,8 +37,8 @@ if (vanityLength === 0) {
   Deno.exit()
 }
 
-if (areBech32Chars(vanity) === false) {
-  console.error("Vanity string contains non Bech32 characters")
+if (areBech32Chars(search) === false) {
+  console.error("Vanity string contains illegal characters")
   Deno.exit()
 }
 
@@ -75,7 +77,7 @@ while (matchedKeyPair === undefined) {
   const npub = bytesToBech32(keyPair.publicKey, "npub")
   const s = npub.substring(5, 5 + vanityLength)
 
-  if (s === vanity) {
+  if (s === search) {
     matchedKeyPair = keyPair
     if (shouldGenerateMnemonic) {
       matchedMnemonic = mnemonic
