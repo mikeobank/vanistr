@@ -1,14 +1,14 @@
 import { 
   type KeyPair, 
+  type Mnemonic, 
+  type MnemonicLength, 
   generateKeyPair, 
   createKeyPair, 
   bytesToBech32, 
   areBech32Chars, 
-  type Mnemonic, 
   generateMnemonic, 
   getPrivateKeyFromMnenomic, 
   wordlistEnglish, 
-  type MnemonicLength, 
   isMnemonicLength 
 } from "npm:nostr-types"
 import { parseArgs } from "jsr:@std/cli/parse-args"

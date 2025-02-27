@@ -17,7 +17,6 @@ export const toBech32 = (str: string) : string => {
 export const toNpub = (str: string) : Npub => {
 
   const bech32 = toBech32(str.replace(/^npub1/, ""))
-  console.log(bech32)
   const npub = `npub1${ bech32 }`
 
   if (isNpub(npub)) {
