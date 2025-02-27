@@ -8,6 +8,3 @@
 ### Run
 - `deno run vanistr.ts --mnemonic=12 Mike_`
 - `deno run vanistr-xpub.ts --xpub=xpub1a6cdefg... --index=32768 --log Mike_`
-
-### ToDo
-- `toVanityPub(npub: Npub, vanity: string)`

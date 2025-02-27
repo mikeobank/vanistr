@@ -12,7 +12,7 @@ import {
   isMnemonicLength 
 } from "npm:nostr-types"
 import { parseArgs } from "jsr:@std/cli/parse-args"
-import { toBech32 } from "./characters/toNpub.ts"
+import { toBech32, toVanityPub } from "./characters/toNpub.ts"
 
 const flags = parseArgs(Deno.args, {
   string: ["mnemonic"],
@@ -93,6 +93,7 @@ const nsec = bytesToBech32(matchedKeyPair.privateKey, "nsec")
 console.log(`
 Found!
 ======
+vanity: ${ toVanityPub(npub, vanity) }
 npub: ${ npub }
 nsec: ${ nsec }
 mnemonic: ${ shouldGenerateMnemonic ? matchedMnemonic?.join(" ") : "-" }

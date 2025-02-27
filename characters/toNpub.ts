@@ -15,7 +15,6 @@ export const toBech32 = (str: string) : string => {
 }
 
 export const toNpub = (str: string) : Npub => {
-
   const bech32 = toBech32(str.replace(/^npub1/, ""))
   const npub = `npub1${ bech32 }`
 
@@ -24,4 +23,14 @@ export const toNpub = (str: string) : Npub => {
   } else {
     throw new Error("Could not map str to npub")
   }
+}
+
+export const toVanityPub = (npub: Npub, vanity: string) : string => {
+  const start = 5
+  const end = start + vanity.length
+  const s = npub.substring(start, end)
+  if (toBech32(vanity) !== s) {
+    throw new Error(`${ vanity } does not map to npub: ${ npub }`)
+  }
+  return `npub1${ vanity }${ npub.substring(end) }`
 }

@@ -2,7 +2,7 @@ import {
   type Npub,
   areBech32Chars
 } from "npm:nostr-types"
-import { toBech32 } from "./characters/toNpub.ts"
+import { toBech32, toVanityPub } from "./characters/toNpub.ts"
 import { parseArgs } from "jsr:@std/cli/parse-args"
 import { getNPubFromXPub } from "./lib/getNPubFromXPub.ts"
 
@@ -57,6 +57,7 @@ if (matched) {
   console.log(`
   Found!
   ======
+  vanity: ${ toVanityPub(npub!, vanity) }
   npub: ${ npub! }
   index: ${ index }
   `)
